@@ -1,11 +1,12 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, jsonify
 from textblob import TextBlob
 import pickle
 import numpy as np
 from flask_basicauth import BasicAuth
+import os
 
-url_arquivo = "C:/Users/johnn/OneDrive/Documentos/Machine Learning/Alura/Projetos DataScience - Challenge/Projeto 1 - Novexus/models/model_random_forest_novexus_churn.pkl"
-url_scaler = "C:/Users/johnn/OneDrive/Documentos/Machine Learning/Alura/Projetos DataScience - Challenge/Projeto 1 - Novexus/models/scaler_random_forest_novexus_churn.pkl"
+url_arquivo = "../../models/model_random_forest_novexus_churn.pkl"
+url_scaler = "../../models/scaler_random_forest_novexus_churn.pkl"
 
 colunas = ['Idoso', 'Contrato_Ativo', 'Valor_Mensal', 'Valor_Total', 'Genero',
             'Conjuge', 'Dependentes', 'Servico_Telefone', 'Mult_Linhas',
@@ -23,8 +24,8 @@ with open(url_scaler, 'rb') as file:
 
     
 app = Flask(__name__)
-app.config['BASIC_AUTH_USERNAME'] = 'julio'
-app.config['BASIC_AUTH_PASSWORD'] = 'alura'
+app.config['BASIC_AUTH_USERNAME'] = os.environ.get('BASIC_AUTH_USERNAME')
+app.config['BASIC_AUTH_PASSWORD'] = os.environ.get('BASIC_AUTH_PASSWORD')
 
 BasicAuth = BasicAuth(app=app)
 
@@ -56,6 +57,6 @@ def analisa_churn():
     else:
         return 'Previsão de CONTINUAR como cliente!' 
 
-app.run(debug=True)
+app.run(debug=True, host='0.0.0.0')
 
 
